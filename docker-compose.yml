@@ -1,5 +1,21 @@
-server:
-  build: .
-  restart: always
-  ports:
-    - "80:8888"
+version: '2'
+
+volumes:
+  # We'll define a volume that will store the data from the postgres databases:
+  postgres-data:
+    driver: local
+
+services:
+  # Our PostgreSQL service:
+  postgres:
+    image: postgres:10.1
+    volumes:
+        # We'll mount the 'postgres-data' volume into the location Postgres stores it's data:
+        - postgres-data:/var/lib/postgresql/data
+  server:
+    build: .
+    restart: always
+    ports:
+      - "80:8888"
+    depends_on:
+      - postgres
